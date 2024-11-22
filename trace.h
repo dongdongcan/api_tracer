@@ -14,24 +14,67 @@
 #include <vector>
 
 #include <cxxabi.h>
+#include <regex>
 #include <string>
 #include <type_traits>
 #include <typeinfo>
 
+#include <iostream>
+#include <string>
+
+std::string adjustBrackets(const std::string &input) {
+  int leftCount = 0;
+  int rightCount = 0;
+
+  for (char c : input) {
+    if (c == '<') {
+      leftCount++;
+    } else if (c == '>') {
+      rightCount++;
+    }
+  }
+
+  std::string result = input;
+  if (rightCount > leftCount) {
+    int extra = rightCount - leftCount;
+    for (auto it = result.rbegin(); it != result.rend() && extra > 0; ++it) {
+      if (*it == '>') {
+        *it = '\0';
+        extra--;
+      }
+    }
+    result.erase(std::remove(result.begin(), result.end(), '\0'), result.end());
+  }
+  return result;
+}
+
 template <typename T>
 static inline std::string getDemangleName() {
   auto processStdPrefix = [](const std::string &typeName) -> std::string {
+    std::string result = typeName;
     if (typeName.rfind("std", 0) == 0) {
-      size_t commaPos = typeName.find(',');
-      std::string result = (commaPos != std::string::npos) ? typeName.substr(0, commaPos) : typeName;
-      int openCount = std::count(result.begin(), result.end(), '<');
-      int closeCount = std::count(result.begin(), result.end(), '>');
-      if (openCount > closeCount) {
-        result.append(openCount - closeCount, '>');
-      }
-      return result;
+      // delete " "
+      result = std::regex_replace(result, std::regex(" "), "");
+      // delete std::__cxx11
+      result = std::regex_replace(result, std::regex("std::__cxx.*?::"), "std::");
+      // delete std::allocator<>
+      result = std::regex_replace(result, std::regex(",std::allocator<.*?>"), "");
+      // delete "std::char_traits"
+      result = std::regex_replace(result, std::regex(",std::char_traits<.*?>"), "");
+      // delete std::deque<*>
+      result = std::regex_replace(result, std::regex(",std::deque<.*?>"), "");
+      // delete ul, UL used in std::array
+      result = std::regex_replace(result, std::regex("ul"), "");
+      result = std::regex_replace(result, std::regex("UL"), "");
+      // basic_string -> string
+      result = std::regex_replace(result, std::regex("basic_string"), "string");
+      // std::string<char> -> std::string
+      result = std::regex_replace(result, std::regex("std::string<.*?>"), "std::string");
+
+      // "," -> ", "
+      result = std::regex_replace(result, std::regex(","), ", ");
     }
-    return typeName;
+    return adjustBrackets(result);
   };
 
   if constexpr (std::is_same_v<T, std::string>) {

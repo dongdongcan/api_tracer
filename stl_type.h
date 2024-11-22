@@ -55,3 +55,14 @@ static inline std::ostream &operator<<(std::ostream &o, const std::queue<T> &v) 
   }
   return o;
 }
+
+template <typename T, std::size_t Num>
+static inline std::ostream &operator<<(std::ostream &o, const std::array<T, Num> &v) {
+  o << "\n";
+  if constexpr (is_fundamental_type<T>) {
+    printFundamentalType<T>(v.data(), Num, o);
+  } else {
+    printSpecialType<T>(v.data(), Num, o);
+  }
+  return o;
+}

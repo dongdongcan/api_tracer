@@ -12,11 +12,13 @@ void test_carray(int iA[2], int iB[], int64_t iBLen, simpleStruct sA[2], simpleS
 }
 
 void test_stl(std::vector<int> iVector, std::vector<simpleStruct> sVector, std::queue<std::string> sQueue,
-              std::string str) {
-  API_TRACE(iVector, sVector, sQueue, str);
+              std::string str, std::array<int, 3> array) {
+  API_TRACE(iVector, sVector, sQueue, str, array);
 }
 
-void test_mstl(std::vector<std::vector<int>> ivVector) { API_TRACE(ivVector); }
+void test_mstl(std::vector<std::vector<int>> ivVector, std::vector<std::vector<std::string>> iivv) {
+  API_TRACE(ivVector, iivv);
+}
 
 int main() {
   // test simple data type
@@ -42,7 +44,8 @@ int main() {
   std::queue<std::string> sQueue;
   sQueue.push("hello world");
   std::string str = "BigBang!";
-  test_stl(iVector, sVector, sQueue, str);
+  std::array<int, 3> array = {11, 12, 13};
+  test_stl(iVector, sVector, sQueue, str, array);
 
   // test multi-stl
   std::vector<std::vector<int>> ivVector{
@@ -52,6 +55,7 @@ int main() {
           7,  8,  9,  10, 11, 12, 13, 14, 15, 16, 1,  2,  3,  4,  5,  6,  7,  8,  9,  10, 11, 12, 13, 14, 15, 16,
       },
       {5, 6, 7, 8}};
-  test_mstl(ivVector);
+  std::vector<std::vector<std::string>> iivVector{{"Hello World!"}, {"Hello Life!"}};
+  test_mstl(ivVector, iivVector);
   return 0;
 }
