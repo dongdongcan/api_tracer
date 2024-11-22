@@ -1,0 +1,6 @@
+*.pyc
+*.bin
+*__pycache__*
+*build*
+*tmp*
+*a.out
