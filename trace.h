@@ -1,26 +1,19 @@
 #pragma once
 
-#include <cxxabi.h>
-
 #include "stl_type.h"
 #include "user_type.h"
+
 #include <algorithm>
+#include <cxxabi.h>
 #include <iostream>
 #include <map>
 #include <ostream>
 #include <queue>
-#include <string>
-#include <typeinfo>
-#include <vector>
-
-#include <cxxabi.h>
 #include <regex>
 #include <string>
 #include <type_traits>
 #include <typeinfo>
-
-#include <iostream>
-#include <string>
+#include <vector>
 
 std::string adjustBrackets(const std::string &input) {
   int leftCount = 0;

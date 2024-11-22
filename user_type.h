@@ -1,5 +1,4 @@
 #pragma once
-#include <vector>
 
 #define USER_CLASS_PRE std::string("          ")
 
